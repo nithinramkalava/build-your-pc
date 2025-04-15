@@ -1,5 +1,5 @@
 {
-  "budget": 100000,
+  "budget": 195000,
   "useCases": {
     "gaming": {"needed": true, "intensity": 7},
     "videoEditing": {"needed": true, "intensity": 5},

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ollama } from "@/lib/ollama";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import LoadingScreen from "./LoadingScreen";
 import BuildResultDisplay, { BuildRecommendation } from "./BuildResultDisplay";
+import { Bot, User, Send, Loader2 } from "lucide-react";
 
 // System prompt for the recommendation system
 const recommendationSystemPrompt = `You are an expert PC building recommendation assistant with deep knowledge of computer hardware, software requirements, and usage patterns. Your goal is to have a natural conversation with users to understand their PC needs, while inferring technical requirements from their responses. Follow these guidelines:
@@ -146,6 +146,11 @@ const RecommendationBuilder = () => {
   const [screen, setScreen] = useState<Screen>("chat");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Added for typing animation
+  const [typingText, setTypingText] = useState("");
+  const [fullResponse, setFullResponse] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   // Initialize with system prompt
   useEffect(() => {
@@ -159,7 +164,43 @@ const RecommendationBuilder = () => {
   // Auto-scroll effect
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, typingText]);
+
+  // Typing animation effect
+  useEffect(() => {
+    let typingTimer: NodeJS.Timeout;
+    let charIndex = 0;
+    
+    if (isTyping && fullResponse) {
+      typingTimer = setInterval(() => {
+        if (charIndex <= fullResponse.length) {
+          setTypingText(fullResponse.substring(0, charIndex));
+          charIndex += 3; // Increase typing speed by processing more characters per interval
+        } else {
+          clearInterval(typingTimer);
+          setIsTyping(false);
+          
+          // Add the completed message to the messages array
+          setMessages((prev) => {
+            // Remove the temporary empty message and add the complete one
+            const withoutEmptyMessage = prev.filter((msg, idx) => 
+              !(idx === prev.length - 1 && msg.role === "assistant" && msg.content === "")
+            );
+            return [...withoutEmptyMessage, { role: "assistant", content: fullResponse }];
+          });
+          
+          // Reset state
+          setFullResponse("");
+          setTypingText("");
+          
+          // Focus the input after response is complete
+          inputRef.current?.focus();
+        }
+      }, 10); // Faster typing speed (10ms instead of 15ms)
+    }
+    
+    return () => clearInterval(typingTimer);
+  }, [isTyping, fullResponse]);
 
   // Function to extract JSON from a message
   const extractJson = (message: string) => {
@@ -242,8 +283,19 @@ const RecommendationBuilder = () => {
       // Show loading screen
       setScreen("loading");
 
-      // Create temporary file with preferences
+      // Log the preferences being sent to help debug
+      console.log("Sending preferences to recommendation API:", JSON.stringify(preferences, null, 2));
+
+      // Send to fixed recommendation system
       const response = await axios.post("/api/recommendation", { preferences });
+      
+      // Log the response to help debug
+      console.log("Received recommendation response:", JSON.stringify(response.data, null, 2));
+
+      // Check for errors in the response
+      if (response.data.error) {
+        throw new Error(response.data.error);
+      }
 
       // Update state with recommendation result
       setPcBuild(response.data);
@@ -254,12 +306,15 @@ const RecommendationBuilder = () => {
       console.error("Error sending to recommendation system:", error);
       // Return to chat with error message
       setScreen("chat");
+      
+      // Add error message to the chat
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
           content:
-            "Sorry, I encountered an error while processing your PC build recommendation. Please try again.",
+            `Sorry, I encountered an error while processing your PC build recommendation: ${errorMessage}. Please try again with different requirements.`,
         },
       ]);
     }
@@ -289,24 +344,24 @@ const RecommendationBuilder = () => {
         { role: "user", content: userMessage },
       ];
 
-      // Get response from LLM
-      const response = await ollama.chat({
-        model: "qwen2.5:14b",
-        messages: chatMessages,
+      // Call GitHub Models API instead of Ollama
+      const response = await axios.post('/api/chat', {
+        messages: chatMessages.filter(msg => msg.role !== 'system'),
       });
 
-      // Get the full response text
-      const fullResponse = response.message.content;
+      // Get the full response text from the API response
+      const fullResponseData = response.data.response;
 
       // Process the response to remove the JSON if present
       const { jsonData, cleanedResponse } =
-        processResponseAndExtractJson(fullResponse);
+        processResponseAndExtractJson(fullResponseData);
 
-      // Save the assistant's cleaned message
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: cleanedResponse },
-      ]);
+      // Set up typing animation
+      setFullResponse(cleanedResponse);
+      setIsTyping(true);
+      
+      // Add an empty message placeholder while typing is in progress
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       // Process JSON if found and initiate build
       if (
@@ -316,20 +371,17 @@ const RecommendationBuilder = () => {
         jsonData.technicalPreferences
       ) {
         console.log("Found valid JSON configuration:", jsonData);
-
-        // Don't add an extra message, just start processing
-        await sendToRecommendationSystem(jsonData);
+        
+        // Wait for typing animation to complete before processing
+        setTimeout(() => {
+          sendToRecommendationSystem(jsonData);
+        }, cleanedResponse.length * 15 + 500); // Approximate time to finish typing
       }
     } catch (error) {
       console.error("Error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content:
-            "Sorry, I encountered an error. Please make sure Ollama is running locally with the required model installed.",
-        },
-      ]);
+      setFullResponse("Sorry, I encountered an error. Please make sure the API is configured correctly.");
+      setIsTyping(true);
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
     }
 
     setIsLoading(false);
@@ -353,69 +405,57 @@ const RecommendationBuilder = () => {
         {displayMessages.map((message, index) => (
           <div
             key={index}
-            className={`${
-              message.role === "user"
-                ? "bg-gray-800 ml-12"
-                : "bg-gray-700 mr-12"
-            } p-4 rounded-lg shadow-md`}
+            className={`flex items-start gap-3 ${
+              message.role === "user" ? "justify-end" : "justify-start"
+            }`}
           >
-            <div className="prose prose-invert max-w-none">
-              <ReactMarkdown
-                components={{
-                  h1: ({ children }) => (
-                    <h1 className="text-2xl font-bold mb-4 text-white">
-                      {children}
-                    </h1>
-                  ),
-                  h2: ({ children }) => (
-                    <h2 className="text-xl font-bold mb-3 text-white">
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 className="text-lg font-bold mb-2 text-white">
-                      {children}
-                    </h3>
-                  ),
-                  p: ({ children }) => (
-                    <p className="mb-4 text-gray-200">{children}</p>
-                  ),
-                  ul: ({ children }) => (
-                    <ul className="list-disc ml-6 mb-4 text-gray-200">
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className="list-decimal ml-6 mb-4 text-gray-200">
-                      {children}
-                    </ol>
-                  ),
-                  li: ({ children }) => (
-                    <li className="mb-1 text-gray-200">{children}</li>
-                  ),
-                  code: ({ children }) => (
-                    <code className="bg-gray-800 px-1 py-0.5 rounded text-green-400">
-                      {children}
-                    </code>
-                  ),
-                  pre: ({ children }) => (
-                    <pre className="bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4">
-                      {children}
-                    </pre>
-                  ),
-                }}
-              >
-                {message.content}
-              </ReactMarkdown>
+            {message.role === "assistant" && (
+              <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <Bot size={16} className="text-blue-500" />
+              </div>
+            )}
+            <div
+              className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                message.role === "user"
+                  ? "bg-blue-600 text-white rounded-tr-none"
+                  : "bg-gray-800 border border-gray-700 rounded-tl-none"
+              }`}
+            >
+              {isTyping && index === messages.length - 1 && message.role === "assistant" ? (
+                <p className="whitespace-pre-wrap text-sm text-gray-200">{typingText}</p>
+              ) : message.role === "user" ? (
+                <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+              ) : (
+                <div className="prose prose-invert max-w-none">
+                  <ReactMarkdown>
+                    {message.content}
+                  </ReactMarkdown>
+                </div>
+              )}
             </div>
+            {message.role === "user" && (
+              <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                <User size={16} className="text-gray-400" />
+              </div>
+            )}
           </div>
         ))}
 
+        {isLoading && !isTyping && (
+          <div className="flex items-start gap-3 justify-start">
+            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+              <Bot size={16} className="text-blue-500" />
+            </div>
+            <div className="bg-gray-800 border border-gray-700 rounded-lg rounded-tl-none px-4 py-2">
+              <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+            </div>
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
         {displayMessages.length === 0 && (
-          <div className="text-center text-gray-400">
-            I&apos;ll help you determine the perfect PC configuration!
-            Let&apos;s start by discussing your requirements.
+          <div className="text-center text-gray-400 p-2">
+            {/* Remove the welcome message to save space */}
           </div>
         )}
       </div>
@@ -428,14 +468,14 @@ const RecommendationBuilder = () => {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
             className="flex-1 p-2 rounded bg-gray-800 text-white border border-gray-700 focus:border-blue-500 focus:outline-none"
-            disabled={isLoading}
+            disabled={isLoading || isTyping}
           />
           <button
             type="submit"
-            disabled={isLoading}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-600 transition-colors duration-200"
+            disabled={isLoading || isTyping || !input.trim()}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-600 transition-colors duration-200 flex items-center justify-center"
           >
-            Send
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send size={16} />}
           </button>
         </div>
       </form>

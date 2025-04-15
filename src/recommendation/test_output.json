@@ -1,0 +1,295 @@
+{
+  "components": {
+    "cpu": {
+      "id": 19,
+      "name": "AMD Ryzen 9 7900X 4.7 GHz 12-Core Processor",
+      "price": "$355.00",
+      "price_usd_num": 355,
+      "price_inr": "₹29,583.33",
+      "details": {
+        "retailer_prices": {
+          "B&H": {
+            "price": "$360.00",
+            "availability": "In Stock"
+          },
+          "Amazon": {
+            "price": "$355.00",
+            "availability": "In Stock"
+          },
+          "Newegg": {
+            "price": "$359.98",
+            "availability": "In Stock"
+          },
+          "MemoryC": {
+            "price": "$541.51",
+            "availability": "In Stock"
+          },
+          "Best Buy": {
+            "price": "$399.00",
+            "availability": "In Stock"
+          }
+        },
+        "manufacturer": "AMD",
+        "part_number": "100-100000589WOF",
+        "series": "AMD Ryzen 9",
+        "microarchitecture": "Zen 4",
+        "core_family": "Raphael",
+        "socket": "AM5",
+        "core_count": 12,
+        "thread_count": 24,
+        "performance_core_clock": "4.7 GHz",
+        "performance_core_boost_clock": "5.6 GHz",
+        "l2_cache": "12 MB",
+        "l3_cache": "64 MB",
+        "tdp": "170 W",
+        "integrated_graphics": "Radeon",
+        "maximum_supported_memory": "128 GB",
+        "ecc_support": true,
+        "includes_cooler": false,
+        "packaging": "Boxed",
+        "lithography": "5 nm",
+        "includes_cpu_cooler": false,
+        "simultaneous_multithreading": true,
+        "url": "https://pcpartpicker.com/product/bwxRsY/amd-ryzen-9-7900x-47-ghz-12-core-processor-100-100000589wof",
+        "score": 100,
+        "ml_score": 374.661232298243,
+        "rank": 74,
+        "market_segment": "Consumer"
+      }
+    },
+    "motherboard": {
+      "id": 77,
+      "name": "ASRock Phantom Gaming X870E Nova WiFi ATX AM5 Motherboard",
+      "price": "$349.99",
+      "price_usd_num": 349.99,
+      "price_inr": "₹29,165.83",
+      "details": {
+        "retailer_prices": {
+          "Amazon": {
+            "price": "$398.36+",
+            "availability": "In Stock"
+          },
+          "Newegg": {
+            "price": "$349.99",
+            "availability": "In Stock"
+          }
+        },
+        "manufacturer": "ASRock",
+        "part_number": "X870E Nova WiFi\n90-MXBPX0-A0UAYZ",
+        "form_factor": "ATX",
+        "socket_cpu": "AM5",
+        "chipset": "AMD X870E",
+        "memory_max": "256 GB",
+        "memory_slots": 4,
+        "memory_type": "DDR5",
+        "memory_speed": "DDR5-4800\nDDR5-5200\nDDR5-5600\nDDR5-6000\nDDR5-6200\nDDR5-6400\nDDR5-6600\nDDR5-6800\nDDR5-7000\nDDR5-7200\nDDR5-8200",
+        "color": "Black / Purple",
+        "onboard_video": "Depends on CPU",
+        "wireless_networking": "Wi-Fi 7",
+        "raid_support": "Yes",
+        "onboard_ethernet": "1 x 5 Gb/s (Realtek 8126)",
+        "m2_slots": "2280 M-key\n2280 M-key\n2280 M-key\n2280 M-key\n2280 M-key\n2230 E-key",
+        "url": "https://pcpartpicker.com/product/4bFmP6/asrock-phantom-gaming-x870e-nova-wifi-atx-am5-motherboard-x870e-nova-wifi",
+        "model": "Phantom Gaming X870E Nova WiFi",
+        "score": 68,
+        "ml_score": 419.377084699451,
+        "rank": 88
+      }
+    },
+    "cooler": {
+      "id": 715,
+      "name": "Cougar Poseidon Elite ARGB 360 62.53 CFM Liquid CPU Cooler",
+      "price": "$115.78",
+      "price_usd_num": 115.78,
+      "price_inr": "₹9,648.33",
+      "details": {
+        "retailer_prices": {
+          "Amazon": {
+            "price": "$115.78+",
+            "availability": "In Stock"
+          }
+        },
+        "manufacturer": "Cougar",
+        "part_number": "3MPSD360.0001\nCGR-PSDELRGB-B-360\nPoseidon Elite ARGB 360",
+        "fan_rpm": "500 - 2200 RPM",
+        "noise_level": "33.5 dB",
+        "color": "Black",
+        "height": "51 mm",
+        "cpu_socket": "AM2\nAM2+\nAM3\nAM3+\nAM4\nAM5\nFM1\nFM2\nFM2+\nLGA1150\nLGA1151\nLGA1155\nLGA1156\nLGA1200\nLGA1366\nLGA1700\nLGA1851",
+        "water_cooled": false,
+        "fanless": false,
+        "url": "https://pcpartpicker.com/product/JtpD4D/cougar-poseidon-elite-argb-360-6253-cfm-liquid-cpu-cooler-3mpsd3600001",
+        "model": "Poseidon Elite ARGB 360",
+        "score": 44,
+        "ml_score": 118.940556610174,
+        "rank": 209
+      }
+    },
+    "memory": {
+      "id": 603,
+      "name": "TEAMGROUP T-Create Expert 96 GB (2 x 48 GB) DDR5-6400 CL32 Memory",
+      "price": "$269.99",
+      "price_usd_num": 269.99,
+      "price_inr": "₹22,499.17",
+      "details": {
+        "retailer_prices": {
+          "Amazon": {
+            "price": "$269.99",
+            "availability": "In Stock"
+          },
+          "Newegg": {
+            "price": "$282.99",
+            "availability": "Out of Stock"
+          }
+        },
+        "manufacturer": "TEAMGROUP",
+        "part_number": "CTCWD596G6400HC32BDC01",
+        "speed": "DDR5-6400",
+        "modules": "2 x 48GB",
+        "price_per_gb": "$2.812",
+        "color": "White",
+        "first_word_latency": "10 ns",
+        "cas_latency": "32",
+        "voltage": "1.4 V",
+        "timing": "32-39-39-76",
+        "heat_spreader": true,
+        "url": "https://pcpartpicker.com/product/cZkH99/teamgroup-t-create-expert-96-gb-2-x-48-gb-ddr5-6400-cl32-memory-ctcwd596g6400hc32bdc01",
+        "score": 83,
+        "ml_score": 303.230843788023,
+        "rank": 45
+      }
+    },
+    "gpu": {
+      "id": 968,
+      "name": "PNY VCNRTX2000ADAS-LLP RTX 2000E Ada Generation 16 GB PCIe x8 Video Card",
+      "price": "$749.99",
+      "price_usd_num": 749.99,
+      "price_inr": "₹62,499.17",
+      "details": {
+        "retailer_prices": {
+          "B&H": {
+            "price": "$849.00",
+            "availability": "In Stock"
+          },
+          "Newegg": {
+            "price": "$749.99",
+            "availability": "In Stock"
+          }
+        },
+        "manufacturer": "PNY",
+        "part_number": "VCNRTX2000ADAS-LLP",
+        "chipset": "RTX 2000E Ada Generation",
+        "memory": "16 GB",
+        "interface": "PCIe x8",
+        "color": "Black",
+        "length": "168 mm",
+        "tdp": "50 W",
+        "case_expansion_slot_width": "1",
+        "total_slot_width": "1",
+        "cooling": "1 Fan",
+        "url": "https://pcpartpicker.com/product/WjpD4D/pny-vcnrtx2000adas-llp-rtx-2000e-ada-generation-16-gb-pcie-x8-video-card-vcnrtx2000adas-llp",
+        "score": 55,
+        "ml_score": 2700.54185125168,
+        "rank": 17,
+        "brand": "NVIDIA"
+      }
+    },
+    "storage": {
+      "id": 181,
+      "name": "Samsung 970 Evo",
+      "price": "116.55",
+      "price_usd_num": 116.55,
+      "price_inr": "₹9,712.5",
+      "details": {
+        "capacity": 500,
+        "price_per_gb": "0.233",
+        "type": "SSD",
+        "cache": "512.0",
+        "form_factor": "M.2-2280",
+        "interface": "M.2 PCIe 3.0 X4",
+        "rank": 9999,
+        "ml_score": 0
+      }
+    },
+    "case": {
+      "id": 516,
+      "name": "Antec C7 ARGB ATX Mid Tower Case",
+      "price": "$116.11",
+      "price_usd_num": 116.11,
+      "price_inr": "₹9,675.83",
+      "details": {
+        "retailer_prices": {
+          "Amazon": {
+            "price": "$116.11+",
+            "availability": "In Stock"
+          },
+          "Newegg": {
+            "price": "$139.99",
+            "availability": "Out of Stock"
+          }
+        },
+        "manufacturer": "Antec",
+        "part_number": "0-761345-10135-6\nC7 ARGB",
+        "type": "ATX Mid Tower",
+        "color": "Black",
+        "side_panel": "Tempered Glass",
+        "power_supply_shroud": false,
+        "front_panel_usb": "USB 3.2 Gen 2 Type-C\nUSB 3.2 Gen 1 Type-A",
+        "motherboard_form_factor": "ATX\nMicro ATX\nMini ITX",
+        "maximum_video_card_length": "450 mm / 17.717\"",
+        "drive_bays": "1 x Internal 2.5\"\n2 x Internal 3.5\"",
+        "expansion_slots": "7 x Full-Height",
+        "dimensions": "485 mm x 241 mm x 504 mm\n19.094\" x 9.488\" x 19.843\"",
+        "volume": "58.91 L\n2.08 ft³",
+        "url": "https://pcpartpicker.com/product/kmn9TW/antec-c7-argb-atx-mid-tower-case-0-761345-10135-6",
+        "score": 75,
+        "ml_score": 125.84882683134,
+        "rank": 309
+      }
+    },
+    "psu": {
+      "id": 140,
+      "name": "Apevia Galaxy 1000 W 80+ Gold Certified Semi-modular ATX Power Supply",
+      "price": "$79.98",
+      "price_usd_num": 79.98,
+      "price_inr": "₹6,665",
+      "details": {
+        "retailer_prices": {
+          "Amazon": {
+            "price": "$79.98",
+            "availability": "In Stock"
+          }
+        },
+        "manufacturer": "Apevia",
+        "part_number": "ATX-GX1000W",
+        "type": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "wattage": 1000,
+        "modular": "Semi",
+        "color": "Black",
+        "fanless": false,
+        "length": "160 mm",
+        "url": "https://pcpartpicker.com/product/yQhv6h/apevia-galaxy-1000-w-80-gold-certified-semi-modular-atx-power-supply-atx-gx1000w",
+        "score": 82,
+        "ml_score": 229.194875178104,
+        "rank": 68
+      }
+    }
+  },
+  "selection_order": [
+    "cpu",
+    "motherboard",
+    "cooler",
+    "memory",
+    "gpu",
+    "storage",
+    "case",
+    "psu"
+  ],
+  "total_cost_usd": "$2153.39",
+  "total_cost_inr": "₹1,79,449.17",
+  "budget_inr": "₹1,95,000",
+  "budget_usd": "$2340.00",
+  "status": "Within budget",
+  "remaining_budget_inr": "₹15,550.83"
+}

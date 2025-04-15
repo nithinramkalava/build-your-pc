@@ -5,6 +5,7 @@ import { Pool } from "pg";
 // Create a pool with error logging
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // Required for Supabase connection
 });
 
 // Log any pool errors

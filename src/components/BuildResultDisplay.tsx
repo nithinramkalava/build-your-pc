@@ -2,7 +2,8 @@ import React from "react";
 
 // Define types for the build recommendation results
 interface ComponentDetails {
-  [key: string]: string | number | boolean | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Details structure varies greatly by component type
+  [key: string]: any;
 }
 
 interface ComponentInfo {
@@ -43,6 +44,88 @@ const BuildResultDisplay: React.FC<BuildResultDisplayProps> = ({
     if (!price) return "N/A";
     return price;
   };
+
+  // Format and render a value based on its type
+  const formatValue = (value: unknown): React.ReactNode => { // Changed any to unknown
+    if (value === null || value === undefined) {
+      return "N/A";
+    } else if (typeof value === "object") {
+      if (Array.isArray(value)) {
+        return value.join(", ");
+      } else {
+        // For nested objects like retailer_prices, create a simple representation
+        return (
+          <div className="pl-2 border-l border-gray-700">
+            {Object.entries(value).map(([nestedKey, nestedValue]) => (
+              <div key={nestedKey} className="mt-1">
+                <span className="text-gray-500">{nestedKey}: </span>
+                {formatValue(nestedValue)}
+              </div>
+            ))}
+          </div>
+        );
+      }
+    } else if (typeof value === "boolean") {
+      return value ? "Yes" : "No";
+    } else {
+      return String(value);
+    }
+  };
+
+  // Function to filter out complex objects we don't want to display directly
+  const shouldDisplayDetail = (key: string, value: unknown): boolean => { // Changed any to unknown
+    // Skip extremely large objects or specific keys we don't want to show
+    const keysToSkip = [
+      "retailer_prices",
+      "rank",
+      "ml_score",
+      "pcpartpicker_url",
+      "url",
+      "uri"
+    ];
+
+    if (keysToSkip.includes(key.toLowerCase())) {
+      return false;
+    }
+
+    // If it's an object with too many items, skip it
+    if (typeof value === "object" && value !== null && !Array.isArray(value) && Object.keys(value).length > 10) {
+      return false;
+    }
+
+    return true;
+  };
+
+  // Format key for display
+  const formatKey = (key: string): string => {
+    return key
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, (str) => str.toUpperCase())
+      .replace(/_/g, " ")
+      .replace(/Tdp/i, "TDP")
+      .replace(/Ssd/i, "SSD")
+      .replace(/Hdd/i, "HDD")
+      .replace(/Usb/i, "USB")
+      .replace(/Pcie/i, "PCIe")
+      .replace(/Wifi/i, "WiFi")
+      .replace(/Bluetooth/i, "Bluetooth")
+      .replace(/Rgb/i, "RGB");
+  };
+
+  // Function to get URL from component details
+  const getComponentUrl = (details: ComponentDetails): string | null => {
+    const urlKeys = ["pcpartpicker_url", "url", "uri"];
+    for (const key of urlKeys) {
+      for (const detailKey of Object.keys(details)) {
+        // Check if detailKey exists and is truthy before trying to access it
+        if (details[detailKey] && detailKey.toLowerCase() === key ) {
+          return details[detailKey] as string; // Cast to string assuming URL is string
+        }
+      }
+    }
+    return null;
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
@@ -102,6 +185,9 @@ const BuildResultDisplay: React.FC<BuildResultDisplayProps> = ({
               const component = pcBuild.components[type];
               if (!component) return null;
 
+              // Get the URL for this component
+              const componentUrl = getComponentUrl(component.details);
+
               return (
                 <div
                   key={type}
@@ -121,29 +207,40 @@ const BuildResultDisplay: React.FC<BuildResultDisplayProps> = ({
                         {formatPrice(component.price_inr)}
                       </div>
 
+                      {/* PC Part Picker link if available */}
+                      {componentUrl && (
+                        <div className="mb-3">
+                          <a
+                            href={componentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 underline text-sm flex items-center"
+                          >
+                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            View Details
+                          </a>
+                        </div>
+                      )}
+
                       {component.details &&
                         Object.keys(component.details).length > 0 && (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                            {Object.entries(component.details).map(
-                              ([key, value]) => {
-                                // Format the key for better display
-                                const formattedKey = key
-                                  .replace(/([A-Z])/g, " $1")
-                                  .replace(/^./, (str) => str.toUpperCase())
-                                  .replace(/_/g, " ");
-
-                                return (
-                                  <div key={key} className="flex">
+                            {Object.entries(component.details)
+                              .filter(([key, value]) => shouldDisplayDetail(key, value))
+                              .map(([key, value]) => (
+                                <div key={key} className="flex flex-col">
+                                  <div className="flex">
                                     <span className="text-gray-500 mr-1">
-                                      {formattedKey}:
+                                      {formatKey(key)}:
                                     </span>
-                                    <span className="text-gray-300">
-                                      {value}
+                                    <span className="text-gray-300 break-words"> {/* Added break-words */}
+                                      {formatValue(value)}
                                     </span>
                                   </div>
-                                );
-                              }
-                            )}
+                                </div>
+                              ))}
                           </div>
                         )}
                     </div>
@@ -152,6 +249,28 @@ const BuildResultDisplay: React.FC<BuildResultDisplayProps> = ({
               );
             })}
           </div>
+
+          {/* Display Selection Errors */}
+           {pcBuild.selection_errors && Object.keys(pcBuild.selection_errors).length > 0 && (
+                <div className="mt-6 bg-red-900 bg-opacity-30 p-4 rounded-lg border border-red-700">
+                    <h3 className="text-lg font-semibold text-red-300 mb-2">Selection Issues</h3>
+                    <ul className="list-disc list-inside text-red-200 text-sm space-y-1">
+                        {Object.entries(pcBuild.selection_errors).map(([key, value]) => (
+                            <li key={key}>
+                                <span className="font-medium capitalize">{key}:</span> {value}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {/* Display General Error */}
+            {pcBuild.error && (
+                <div className="mt-6 bg-red-900 bg-opacity-30 p-4 rounded-lg border border-red-700">
+                    <h3 className="text-lg font-semibold text-red-300 mb-2">System Error</h3>
+                    <p className="text-red-200 text-sm">{pcBuild.error}</p>
+                </div>
+            )}
 
           <div className="mt-8 text-center">
             <button

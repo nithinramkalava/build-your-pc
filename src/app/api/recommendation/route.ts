@@ -1,82 +1,57 @@
 import { NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import { exec } from "child_process";
-import { promisify } from "util";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
-import fs from "fs/promises";
-
-const execAsync = promisify(exec);
+import { PCRecommendationSystem } from '@/lib/recommendationEngine';
+import { UserPreferencesJson } from "@/lib/types";
 
 export async function POST(request: Request) {
+  let recSystem = null;
+  
   try {
-    const { preferences } = await request.json();
+    const { preferences } = (await request.json()) as { preferences: UserPreferencesJson };
 
-    // Generate a unique ID for this request
-    const requestId = uuidv4();
-
-    // Create temp directory if it doesn't exist
-    const tempDir = path.join(process.cwd(), "temp");
-    try {
-      await fs.mkdir(tempDir, { recursive: true });
-    } catch (err) {
-      console.error("Error creating temp directory:", err);
+    if (!preferences) {
+      return NextResponse.json(
+        { error: "Preferences are required in the request body" },
+        { status: 400 }
+      );
+    }
+    
+    // Validate basic structure of preferences
+    if (!preferences.budget || !preferences.useCases || !preferences.technicalPreferences) {
+      return NextResponse.json(
+        { error: "Invalid preferences structure. Must include budget, useCases, and technicalPreferences." },
+        { status: 400 }
+      );
     }
 
-    // Create input file path
-    const inputFilePath = path.join(tempDir, `input_${requestId}.json`);
+    // Log the received preferences
+    console.log("Received preference request:", JSON.stringify(preferences, null, 2));
 
-    // Write preferences to input file
-    await writeFile(inputFilePath, JSON.stringify(preferences, null, 2));
+    // Instantiate the TypeScript recommendation system
+    // The flags for ML ranking and dynamic budget can be controlled here if needed
+    recSystem = new PCRecommendationSystem(preferences);
 
-    console.log(`Created input file: ${inputFilePath}`);
+    // Generate recommendation using the TypeScript engine
+    console.log("Generating recommendation using TypeScript engine...");
+    const recommendationResult = await recSystem.buildRecommendation();
+    console.log("Recommendation generated.");
 
-    // Path to Python script
-    const pythonScriptPath = path.join(
-      process.cwd(),
-      "src",
-      "recommendation",
-      "recommendation_system.py"
-    );
-
-    // Path for output results
-    const outputFilePath = path.join(tempDir, `output_${requestId}.json`);
-
-    // Execute the Python script with the input file
-    const command = `python "${pythonScriptPath}" --input "${inputFilePath}" --output "${outputFilePath}"`;
-
-    console.log(`Executing command: ${command}`);
-
-    const { stdout, stderr } = await execAsync(command);
-
-    if (stderr) {
-      console.error("Python script error:", stderr);
-    }
-
-    console.log("Python script output:", stdout);
-
-    // Read the output file
-    let recommendationResult;
-    try {
-      const outputContent = await fs.readFile(outputFilePath, "utf-8");
-      recommendationResult = JSON.parse(outputContent);
-      console.log("Recommendation result loaded");
-    } catch (readErr) {
-      console.error("Error reading output file:", readErr);
-      throw new Error("Failed to read recommendation results");
-    }
-
-    // Clean up temporary files
-    try {
-      await fs.unlink(inputFilePath);
-      await fs.unlink(outputFilePath);
-    } catch (cleanupErr) {
-      console.error("Error cleaning up temporary files:", cleanupErr);
+    // Check if the engine returned an error object
+    if (recommendationResult && recommendationResult.error) {
+      console.error("Recommendation Engine Error:", recommendationResult.error, recommendationResult.details);
+      return NextResponse.json(
+        {
+          error: "Failed to generate recommendation",
+          details: recommendationResult.error, // Provide the engine error message
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(recommendationResult);
+
   } catch (error) {
     console.error("Recommendation API error:", error);
+    // Ensure we attempt to close the pool even if instantiation or other parts fail
     return NextResponse.json(
       {
         error:
@@ -84,5 +59,10 @@ export async function POST(request: Request) {
       },
       { status: 500 }
     );
+  } finally {
+    // Ensure we close the connection pool
+    if (recSystem) {
+      await recSystem.close();
+    }
   }
 }
