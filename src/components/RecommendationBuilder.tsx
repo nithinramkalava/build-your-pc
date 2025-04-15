@@ -155,7 +155,7 @@ const RecommendationBuilder = () => {
   // Initialize with system prompt
   useEffect(() => {
     inputRef.current?.focus();
-  }, [isLoading]);
+  }, [isLoading, isTyping]);
 
   useEffect(() => {
     setMessages([{ role: "system", content: recommendationSystemPrompt }]);
@@ -192,9 +192,6 @@ const RecommendationBuilder = () => {
           // Reset state
           setFullResponse("");
           setTypingText("");
-          
-          // Focus the input after response is complete
-          inputRef.current?.focus();
         }
       }, 10); // Faster typing speed (10ms instead of 15ms)
     }
