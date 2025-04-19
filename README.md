@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PC Builder
+
+A web application designed to help users build custom PC configurations using a Next.js frontend with a PostgreSQL database.
+
+## Features
+
+- **Skilled Builder Mode**: A streamlined interface for experienced users to directly select PC components with compatibility checks.
+- **Beginner Builder Mode**: An interactive chat-based interface that guides novice users through component selection based on their needs and budget.
+- **Component Database**: Comprehensive database of PC parts with detailed specifications and compatibility information.
+- **Smart Compatibility**: Automatically filters compatible components based on previous selections.
+- **AI-Powered Guidance**: Uses AI to provide personalized PC build recommendations.
+
+## Technology Stack
+
+- **Frontend**: Next.js 15.1.6 with React 19
+- **Styling**: Tailwind CSS
+- **Database**: PostgreSQL 
+- **AI Integration**: Ollama with qwen2.5:14b model
+- **Markdown Rendering**: react-markdown for formatted chat responses
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up your environment variables (copy `.env.local.sample` to `.env.local` and fill in the values)
+4. Set up the PostgreSQL database using the scripts in `src/db_setup/`
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
+6. Open [http://localhost:3000](http://localhost:3000) with your browser
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project Structure
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application is organized into the following main directories:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `src/app/`: Next.js app router pages
+- `src/components/`: React components
+- `src/db_setup/`: Database initialization scripts
+- `src/lib/`: Utility functions and libraries
+- `src/data/`: Static data files
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Development Scripts
 
-## Learn More
+- `npm run dev`: Start the development server with Turbopack
+- `npm run build`: Build the application for production
+- `npm run start`: Start the production server
+- `npm run lint`: Run ESLint to check code quality
+- `npm run test-recommendation`: Test the recommendation system
+- `npm run test-api`: Test the API endpoints
 
-To learn more about Next.js, take a look at the following resources:
+## Database Schema
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The application uses a PostgreSQL database with tables for different PC components (CPU, motherboard, GPU, etc.) and compatibility relationships between them.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is private and not licensed for public use.
