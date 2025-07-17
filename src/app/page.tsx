@@ -68,9 +68,9 @@ export default function Home() {
             {/* Beginner Path */}
             <Link 
               href="/recommend"
-              className="group relative p-8 bg-gradient-to-br from-blue-100 to-blue-50 border border-blue-200 rounded-2xl hover:border-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20"
+              className="group relative p-8 bg-gradient-to-br from-blue-100 to-blue-50 border border-blue-200 rounded-2xl hover:border-blue-400 transition-all duration-200 hover:shadow-xl"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
               <div className="relative space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -82,7 +82,7 @@ export default function Home() {
                       <p className="text-blue-600 font-medium">Perfect for beginners</p>
                     </div>
                   </div>
-                  <ArrowRight className="w-6 h-6 text-gray-500 group-hover:text-blue-600 transition-colors" />
+                  <ArrowRight className="w-6 h-6 text-gray-500 group-hover:text-blue-600 transition-colors duration-200" />
                 </div>
                 
                 <div className="space-y-4">
@@ -117,9 +117,9 @@ export default function Home() {
             {/* Expert Path */}
             <Link 
               href="/skilled"
-              className="group relative p-8 bg-gradient-to-br from-purple-100 to-purple-50 border border-purple-200 rounded-2xl hover:border-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20"
+              className="group relative p-8 bg-gradient-to-br from-purple-100 to-purple-50 border border-purple-200 rounded-2xl hover:border-purple-400 transition-all duration-200 hover:shadow-xl"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
               <div className="relative space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -131,7 +131,7 @@ export default function Home() {
                       <p className="text-purple-600 font-medium">For experienced users</p>
                     </div>
                   </div>
-                  <ArrowRight className="w-6 h-6 text-gray-500 group-hover:text-purple-600 transition-colors" />
+                  <ArrowRight className="w-6 h-6 text-gray-500 group-hover:text-purple-600 transition-colors duration-200" />
                 </div>
                 
                 <div className="space-y-4">
