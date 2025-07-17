@@ -65,46 +65,81 @@ RETURNS TABLE (
     height numeric,
     tdp_support int,
     radiator_size varchar,
-    clearance_required numeric
+    clearance_required numeric,
+    url text
 ) AS $$
 DECLARE
     cpu_socket text;
     cpu_tdp int;
 BEGIN
-    -- Retrieve CPU socket type and TDP requirements
-    SELECT socket_type::text, tdp INTO cpu_socket, cpu_tdp 
-    FROM cpu 
-    WHERE cpu.id = cpu_id;
+            -- Retrieve motherboard info
+    SELECT 
+        m.socket_type::text,
+        m.form_factor::text,
+        m.memory_max::int,
+        m.memory_slots::int,
+        m.pcie_x16_slots::int,
+        m.pcie_x8_slots::int,
+        m.pcie_x4_slots::int,
+        m.pcie_x1_slots::int,
+        m.mini_pcie_slots::int,
+        m.half_mini_pcie_slots::int,
+        m.mini_pcie_msata_slots::int,
+        m.mSATA_slots::int,
+        m.sata_6gb_s::int,
+        m.onboard_ethernet::text,
+        m.onboard_video::text,
+        m.usb_2_0_headers::int,
+        m.usb_3_0_headers::int,
+        m.usb_3_1_headers::int,
+        m.usb_3_2_headers::int
+    INTO 
+        mb_socket,
+        mb_form_factor,
+        mb_memory_max,
+        mb_memory_slots,
+        mb_pcie_x16_slots,
+        mb_pcie_x8_slots,
+        mb_pcie_x4_slots,
+        mb_pcie_x1_slots,
+        mb_mini_pcie_slots,
+        mb_half_mini_pcie_slots,
+        mb_mini_pcie_msata_slots,
+        mb_mSATA_slots,
+        mb_sata_6gb_s,
+        mb_onboard_ethernet,
+        mb_onboard_video,
+        mb_usb_2_0_headers,
+        mb_usb_3_0_headers,
+        mb_usb_3_1_headers,
+        mb_usb_3_2_headers
+    FROM motherboard_specs m
+    WHERE m.id = motherboard_id;
 
-    -- Validate CPU exists
-    IF cpu_socket IS NULL THEN
-        RAISE EXCEPTION 'CPU socket not found for ID %', cpu_id;
+    -- Validate motherboard exists
+    IF mb_socket IS NULL THEN
+        RAISE EXCEPTION 'Motherboard socket not found for ID %', motherboard_id;
     END IF;
 
-    -- Return compatible coolers based on socket and TDP requirements
+    -- Return compatible CPUs based on socket matching
     RETURN QUERY
     SELECT 
         c.id,
         c.name,
         c.price,
-        c.rpm::text,
-        c.noise_level::text,
-        c.color,
-        c.size,
-        c.supported_sockets,
-        c.height,
-        c.tdp_support,
-        c.radiator_size,
-        c.clearance_required
-    FROM cpu_cooler c
-    WHERE EXISTS (
-        -- Check if CPU socket is in cooler's supported sockets array
-        SELECT 1
-        FROM unnest(c.supported_sockets) socket
-        WHERE socket = cpu_socket
-    )
-    -- Ensure cooler can handle CPU's TDP (if specified)
-    AND (c.tdp_support >= cpu_tdp OR cpu_tdp IS NULL)
+        c.core_count::text,
+        c.core_clock::text,
+        c.boost_clock::text,
+        c.tdp::text,
+        c.series,
+        c.microarchitecture,
+        c.includes_cooler,
+        c.socket_type,
+        c.integrated_graphics,
+        c.smt,
+        c.url
+    FROM cpu_specs c
+    WHERE c.socket_type = mb_socket
     ORDER BY c.price ASC NULLS LAST;
 END;
 $$ LANGUAGE plpgsql;

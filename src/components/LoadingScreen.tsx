@@ -1,47 +1,55 @@
 import React from "react";
+import { Cpu, Monitor, Zap, Wrench } from "lucide-react";
 
 const LoadingScreen: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4">
-      <div className="relative w-32 h-32 mb-8">
-        <div className="absolute top-0 left-0 w-full h-full border-8 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <div className="absolute top-4 left-4 w-24 h-24 border-8 border-blue-300 border-t-transparent rounded-full animate-spin-slow"></div>
-        <div className="absolute top-8 left-8 w-16 h-16 border-8 border-purple-400 border-t-transparent rounded-full animate-spin-reverse"></div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+      <div className="text-center space-y-8">
+        {/* Main Animation */}
+        <div className="relative">
+          {/* Outer rotating ring */}
+          <div className="w-32 h-32 border-4 border-blue-200 rounded-full animate-spin">
+            <div className="absolute top-0 left-1/2 w-6 h-6 bg-blue-600 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+          </div>
+          
+          {/* Inner pulsing circle */}
+          <div className="absolute inset-0 w-32 h-32 border-4 border-purple-200 rounded-full animate-pulse">
+            <div className="absolute top-1/4 right-0 w-4 h-4 bg-purple-600 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+          </div>
+          
+          {/* Center icon */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+              <Cpu className="w-8 h-8 text-blue-600 animate-pulse" />
+            </div>
+          </div>
+        </div>
+
+        {/* Title */}
+        <div className="space-y-4">
+          <h1 className="text-4xl font-bold text-gray-900">
+            Building Your
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              Perfect PC
+            </span>
+          </h1>
+          <p className="text-lg text-gray-600 max-w-md mx-auto">
+            Our AI is analyzing thousands of components to create the ideal build for your needs
+          </p>
+        </div>
+
+        {/* Animated dots */}
+        <div className="flex justify-center space-x-2">
+          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+          <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+          <div className="w-3 h-3 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+        </div>
+
+        {/* Time estimate */}
+        <p className="text-gray-500 text-sm">
+          This usually takes 10-15 seconds
+        </p>
       </div>
-
-      <h2 className="text-3xl font-bold mb-4 text-blue-300 text-center">
-        Building Your Custom PC
-      </h2>
-      <p className="text-gray-300 text-center max-w-lg mb-2">
-        Analyzing components, checking compatibility, and optimizing for your
-        specific requirements...
-      </p>
-      <p className="text-gray-400 text-center">This may take a moment</p>
-
-      <style jsx>{`
-        @keyframes spin-slow {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 3s linear infinite;
-        }
-        @keyframes spin-reverse {
-          0% {
-            transform: rotate(360deg);
-          }
-          100% {
-            transform: rotate(0deg);
-          }
-        }
-        .animate-spin-reverse {
-          animation: spin-reverse 2s linear infinite;
-        }
-      `}</style>
     </div>
   );
 };

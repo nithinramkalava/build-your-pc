@@ -7,8 +7,8 @@ import Navigation from '@/components/Navigation'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'PC Builder',
-  description: 'Build your perfect PC with expert guidance',
+  title: 'PC Builder - Build Your Perfect PC',
+  description: 'Get personalized PC build recommendations with our AI assistant or use expert tools to build your dream PC',
 }
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-gray-900 text-white`}>
         <Navigation />
-        <main className="container mx-auto p-4">
+        <main>
           {children}
         </main>
       </body>
