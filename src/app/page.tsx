@@ -165,24 +165,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Trust Indicators */}
-        <div className="mt-16 pt-16 border-t border-gray-200">
-          <div className="text-center space-y-8">
-            <h3 className="text-2xl font-bold text-gray-900">Trusted by PC Builders</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">10K+</div>
-                <div className="text-gray-600">PCs Built</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">99%</div>
-                <div className="text-gray-600">Compatibility Rate</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">4.9/5</div>
-                <div className="text-gray-600">User Rating</div>
-              </div>
-            </div>
+        {/* Footer */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="text-center">
+            <p className="text-gray-600 text-sm">
+              © 2025 Nithin Ram Kalava. Crafted with passion for PC builders.
+            </p>
           </div>
         </div>
       </div>
